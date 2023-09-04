@@ -108,6 +108,10 @@ int is_palindrome(const char *input, int input_strlen)
     int i, j;
     int half_len = input_strlen/2;
 
+    if (strlen(input) < 2 || input_strlen < 2) {
+        return -1;
+    }
+
     for(i = 0, j = input_strlen-1; i <= half_len; ++i, --j)
     {
         /* Ignore whitespaces */
