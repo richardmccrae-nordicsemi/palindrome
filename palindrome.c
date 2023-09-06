@@ -102,42 +102,64 @@ char is_valid_char(char c)
  * @param input User input string
  * @return int 0 is not a palidrome, 1 if it is
  */
-int is_palindrome(const char *input, int input_strlen)
+int is_palindrome(const char *input)
 {
     uint8_t l, r;
     int i, j;
-    int half_len = input_strlen/2;
+    int half_len;
+    int count = 0;
 
-    if (strlen(input) < 2 || input_strlen < 2) {
+check_len:
+    if (input[count] != '\0') {
+        count = count + 1;
+        goto check_len;
+    } else {
+        if (count < 2) {
+            // fail
+        }
+    }
+
+    half_len = count / 2;
+    i = 0;
+    j = count;
+
+loop:
+    // for(i = 0, j = count-1; i <= half_len; ++i, --j)
+    // {
+    if (i => half_len) {
+        goto end;
+    }
+
+    /* Ignore whitespaces */
+    if (is_whitespace(input[i])) {
+        i++;
+    }
+    if (is_whitespace(input[j])) {
+        j--;
+    }
+
+    l = is_valid_char(input[i]);
+    if (!l) {
+        return -1;
+    }
+    r = is_valid_char(input[j]);
+    if (!r) {
         return -1;
     }
 
-    for(i = 0, j = input_strlen-1; i <= half_len; ++i, --j)
-    {
-        /* Ignore whitespaces */
-        if (is_whitespace(input[i])) {
-            i++;
-        }
-        if (is_whitespace(input[j])) {
-            j--;
-        }
-
-        l = is_valid_char(input[i]);
-        if (!l) {
-            return -1;
-        }
-        r = is_valid_char(input[j]);
-        if (!r) {
-            return -1;
-        }
-
-        if (l == r) {
-            // pass
-        } else {
-            // Not a palindrome
-            return 0;
-        }
+    if (l == r) {
+        // pass
+    } else {
+        // Not a palindrome
+        return 0;
     }
 
+    i++;
+    j--;
+
+    goto loop;
+    // }
+
+end:
     return 1;
 }

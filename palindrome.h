@@ -9,7 +9,7 @@
  *
  */
 
-int is_palindrome(const char *input, size_t input_strlen);
+int is_palindrome(const char *input);
 int is_whitespace(char c);
 int is_number(char c);
 int is_lowercase(char c);
