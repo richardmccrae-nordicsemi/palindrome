@@ -84,13 +84,13 @@ int is_palindrome(char input[])
     int length = 0;
 
 check_len:
-    if (input[length] != '\0') {
-        length = length + 1;
-        goto check_len;
-    } else {
+    if (input[length] == '\0') {
         if (length < 2) {
             goto error_too_short;
         }
+    } else {
+        length = length + 1;
+        goto check_len;
     }
 
     half_len = length / 2;
