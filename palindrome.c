@@ -34,9 +34,31 @@
 #define ASCII_UPPERCASE_HIGH  90
 #define ASCII_LOWERCASE_LOW   97
 #define ASCII_LOWERCASE_HIGH  122
-
 #define ASCII_CASE_CORRECT    32
 
+char is_valid_char(char *c, int idx)
+{
+    char tmp = c[idx];
+
+    if (c == NULL) {
+        return -1;
+    }
+
+    /* Check for illegal characters, left */
+    if (tmp >= ASCII_NUMBER_LOW && tmp <= ASCII_NUMBER_HIGH) {
+        // pass
+    } else if (tmp >= ASCII_LOWERCASE_LOW && tmp <= ASCII_LOWERCASE_HIGH) {
+        // pass
+    } else if (tmp >= ASCII_UPPERCASE_LOW && tmp <= ASCII_UPPERCASE_HIGH) {
+        tmp = tmp + ASCII_CASE_CORRECT;
+        c[idx] = tmp;
+    } else {
+        // illegal character
+        return 0;
+    }
+
+    return 1;
+}
 
 int is_whitespace(char c)
 {
@@ -47,54 +69,6 @@ int is_whitespace(char c)
     }
 }
 
-int is_number(char c)
-{
-    if (c >= ASCII_NUMBER_LOW && c <= ASCII_NUMBER_HIGH) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-int is_lowercase(char c)
-{
-    if (c >= ASCII_LOWERCASE_LOW && c <= ASCII_LOWERCASE_HIGH) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-int is_uppercase(char c)
-{
-    if (c >= ASCII_UPPERCASE_LOW && c <= ASCII_UPPERCASE_HIGH) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-char convert_lower_to_uppercase(char c)
-{
-    c = c - ASCII_CASE_CORRECT;
-}
-
-char is_valid_char(char c)
-{
-    /* Check for illegal characters, left */
-    if (is_number(c)) {
-        // pass
-    } else if (is_uppercase(c)) {
-        // pass
-    } else if (is_lowercase(c)) {
-        c = convert_lower_to_uppercase(c);
-    } else {
-        // illegal character
-        return 0;
-    }
-
-    return c;
-}
 /**
  * @brief Check if user's input string is a palindrome.
  * Disregard spaces
@@ -102,64 +76,74 @@ char is_valid_char(char c)
  * @param input User input string
  * @return int 0 is not a palidrome, 1 if it is
  */
-int is_palindrome(const char *input)
+int is_palindrome(char input[])
 {
     uint8_t l, r;
     int i, j;
     int half_len;
-    int count = 0;
+    int length = 0;
 
 check_len:
-    if (input[count] != '\0') {
-        count = count + 1;
+    if (input[length] != '\0') {
+        length = length + 1;
         goto check_len;
     } else {
-        if (count < 2) {
-            // fail
+        if (length < 2) {
+            goto error_too_short;
         }
     }
 
-    half_len = count / 2;
+    half_len = length / 2;
     i = 0;
-    j = count;
+    j = length-1;
+
+    // printf("Length: %d, half: %d\n", length, half_len);
 
 loop:
-    // for(i = 0, j = count-1; i <= half_len; ++i, --j)
+    // for(i = 0, j = length-1; i <= half_len; ++i, --j)
     // {
-    if (i => half_len) {
-        goto end;
+    if (i > half_len) {
+        goto end_palindrome;
     }
 
     /* Ignore whitespaces */
     if (is_whitespace(input[i])) {
-        i++;
+        i = i + 1;
     }
     if (is_whitespace(input[j])) {
+        j = j -1;
+    }
+
+    // printf("input[%d]: %c, input[%d]: %c\n", i, input[i], j, input[j]);
+    if (!is_valid_char(input, i)) {
+        goto error_invalid_character;
+    }
+    if (!is_valid_char(input, j)) {
+        goto error_invalid_character;
+    }
+
+    if (input[i] == input[j]) {
+        i++;
         j--;
-    }
-
-    l = is_valid_char(input[i]);
-    if (!l) {
-        return -1;
-    }
-    r = is_valid_char(input[j]);
-    if (!r) {
-        return -1;
-    }
-
-    if (l == r) {
-        // pass
+        goto loop;
     } else {
         // Not a palindrome
-        return 0;
+        goto end_not_palindrome;
     }
 
-    i++;
-    j--;
+error_invalid_character:
+    printf("Error: Invalid character\n");
+    goto end_error;
+error_too_short:
+    printf("Error: Entry must be atleast 2 characters\n");
+    goto end_error;
 
-    goto loop;
-    // }
-
-end:
+end_palindrome:
+    printf("A palindrome\n");
     return 1;
+end_not_palindrome:
+    printf("Not a palindrome\n");
+    return 0;
+end_error:
+    return -1;
 }

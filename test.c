@@ -34,182 +34,106 @@ void test_is_not_whitespace(void)
     TEST_ASSERT_FALSE(ret);
 }
 
-void test_is_number(void)
-{
-    ret = is_number('0');
-    TEST_ASSERT_TRUE(ret);
-
-    ret = is_number('9');
-    TEST_ASSERT_TRUE(ret);
-}
-
-void test_is_not_number(void)
-{
-    char character = 'a';
-
-    ret = is_number(character);
-    TEST_ASSERT_FALSE(ret);
-
-    ret = is_number('+');
-    TEST_ASSERT_FALSE(ret);
-}
-
-void test_is_lowercase(void)
-{
-    ret = is_lowercase('a');
-    TEST_ASSERT_TRUE(ret);
-
-    ret = is_lowercase('z');
-    TEST_ASSERT_TRUE(ret);
-}
-
-void test_is_not_lowercase(void)
-{
-    ret = is_lowercase('A');
-    TEST_ASSERT_FALSE(ret);
-
-    ret = is_lowercase('4');
-    TEST_ASSERT_FALSE(ret);
-
-    ret = is_lowercase('!');
-    TEST_ASSERT_FALSE(ret);
-}
-
-void test_is_uppercase(void)
-{
-    ret = is_uppercase('A');
-    TEST_ASSERT_TRUE(ret);
-
-    ret = is_uppercase('Z');
-    TEST_ASSERT_TRUE(ret);
-}
-
-void test_is_not_uppercase(void)
-{
-    ret = is_uppercase('a');
-    TEST_ASSERT_FALSE(ret);
-
-    ret = is_uppercase('4');
-    TEST_ASSERT_FALSE(ret);
-
-    ret = is_uppercase('!');
-    TEST_ASSERT_FALSE(ret);
-}
-
-void test_convert_lower_to_uppercase(void)
-{
-    char a = convert_lower_to_uppercase('a');
-    TEST_ASSERT_EQUAL_CHAR('A', a);
-
-    a = convert_lower_to_uppercase('z');
-    TEST_ASSERT_EQUAL_CHAR('Z', a);
-}
-
-
-/**  Mid-level  **/
 void test_is_valid_char_valid(void)
 {
-    ret = is_valid_char('a');
-    TEST_ASSERT_TRUE(ret);
+    char lower[] = "abc";
+    char upper_A[] = "A";
+    char upper_Z[] = "Z";
+    char number_0[] = "0";
+    char number_9[] = "9";
 
-    ret = is_valid_char('z');
-    TEST_ASSERT_TRUE(ret);
+    ret = is_valid_char(lower,0);
+    TEST_ASSERT_EQUAL_INT(1, ret);
+    TEST_ASSERT_EQUAL_CHAR('a', lower[0]);
 
-    ret = is_valid_char('A');
-    TEST_ASSERT_TRUE(ret);
+    ret = is_valid_char(upper_A,0);
+    TEST_ASSERT_EQUAL_INT(1, ret);
+    TEST_ASSERT_EQUAL_CHAR('a', upper_A[0]);
 
-    ret = is_valid_char('Z');
-    TEST_ASSERT_TRUE(ret);
+    ret = is_valid_char(upper_Z,0);
+    TEST_ASSERT_EQUAL_INT(1, ret);
+    TEST_ASSERT_EQUAL_CHAR('z', upper_Z[0]);
 
-    ret = is_valid_char('0');
-    TEST_ASSERT_TRUE(ret);
+    ret = is_valid_char(number_0,0);
+    TEST_ASSERT_EQUAL_INT(1, ret);
+    TEST_ASSERT_EQUAL_CHAR('0', number_0[0]);
 
-    ret = is_valid_char('9');
-    TEST_ASSERT_TRUE(ret);
+    ret = is_valid_char(number_9,0);
+    TEST_ASSERT_EQUAL_INT(1, ret);
+    TEST_ASSERT_EQUAL_CHAR('9', number_9[0]);
 }
 
 void test_is_valid_char_invalid(void)
 {
-    ret = is_valid_char('!');
+    char invalid[] = "!";
+    ret = is_valid_char(invalid,0);
     TEST_ASSERT_FALSE(ret);
 
-    ret = is_valid_char('-');
-    TEST_ASSERT_FALSE(ret);
-
-    ret = is_valid_char('?');
-    TEST_ASSERT_FALSE(ret);
+    // ret = is_valid_char(NULL,0);
+    // TEST_ASSERT_EQUAL_INT(-1, ret);
 }
+
+
 /**  Palinedrome  **/
 void test_palindrome_no_spaces_even(void)
 {
-    char * user_input = "fedcbaabcdef";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_TRUE(ret);
+    ret = is_palindrome("fedcbaabcdef");
+    TEST_ASSERT_EQUAL_INT(1, ret);
 }
 
 void test_palindrome_no_spaces_odd(void)
 {
-    char * user_input = "fedcba1abcdef";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_TRUE(ret);
+    ret = is_palindrome("fedcba1abcdef");
+    TEST_ASSERT_EQUAL_INT(1, ret);
 }
 
 void test_palindrome_spaces_even(void)
 {
-    char * user_input = "fed cbaabcdef";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_TRUE(ret);
+    ret = is_palindrome("fed cbaabcdef");
+    TEST_ASSERT_EQUAL_INT(1, ret);
 }
 
 void test_palindrome_spaces_odd(void)
 {
-    char * user_input = "fedcba1abc def";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_TRUE(ret);
+    ret = is_palindrome("fedcba1abc def");
+    TEST_ASSERT_EQUAL_INT(1, ret);
 }
 
 void test_palindrome_case_insensitive(void)
 {
-    char * user_input = "FEDCBA321123abcdef";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_TRUE(ret);
+    char arr[] = "FEDCBA321123abcdef";
+    ret = is_palindrome(arr);
+    TEST_ASSERT_EQUAL_INT(1, ret);
 }
 
 /**    Not a palindrome    **/
 void test_no_palindrome_even(void)
 {
-    char * user_input = "fedczbaabqcdef";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_FALSE(ret);
+    ret = is_palindrome("fedczbaabqcdef");
+    TEST_ASSERT_EQUAL_INT(0, ret);
 }
 
 void test_no_palindrome_odd(void)
 {
-    char * user_input = "fedcba1abcdef9";
-
-    ret = is_palindrome(user_input);
-    TEST_ASSERT_FALSE(ret);
+    ret = is_palindrome("fedcba1abcdef9");
+    TEST_ASSERT_EQUAL_INT(0,ret);
 }
 
 void test_illegal_characters_even(void)
 {
-    char * user_input = "ab;;ba";
-
-    ret = is_palindrome(user_input);
+    ret = is_palindrome("ab;;ba");
     TEST_ASSERT_EQUAL_INT(-1, ret);
 }
 
 void test_illegal_characters_odd(void)
 {
-    char * user_input = "abc!cba";
+    ret = is_palindrome("abc!cba");
+    TEST_ASSERT_EQUAL_INT(-1, ret);
+}
 
-    ret = is_palindrome(user_input);
+void test_illegal_one_character(void)
+{
+    ret = is_palindrome("a");
     TEST_ASSERT_EQUAL_INT(-1, ret);
 }
 
@@ -219,19 +143,10 @@ int main(void)
     UNITY_BEGIN();
 
     /* low-level fxs */
-    // RUN_TEST(test_is_whitespace);
-    // RUN_TEST(test_is_not_whitespace);
-    // RUN_TEST(test_is_number);
-    // RUN_TEST(test_is_not_number);
-    // RUN_TEST(test_is_lowercase);
-    // RUN_TEST(test_is_not_lowercase);
-    // RUN_TEST(test_is_uppercase);
-    // RUN_TEST(test_is_not_uppercase);
-    // RUN_TEST(test_convert_lower_to_uppercase);
-
-    /* mid-level */
-    // RUN_TEST(test_is_valid_char_valid);
-    // RUN_TEST(test_is_valid_char_invalid);
+    RUN_TEST(test_is_whitespace);
+    RUN_TEST(test_is_not_whitespace);
+    RUN_TEST(test_is_valid_char_valid);
+    RUN_TEST(test_is_valid_char_invalid);
 
     /* Palindrome */
     RUN_TEST(test_palindrome_no_spaces_even);
@@ -245,6 +160,8 @@ int main(void)
     RUN_TEST(test_no_palindrome_odd);
     RUN_TEST(test_illegal_characters_even);
     RUN_TEST(test_illegal_characters_odd);
+    RUN_TEST(test_illegal_one_character);
+
 
     return UNITY_END();
 }

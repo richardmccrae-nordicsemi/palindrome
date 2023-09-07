@@ -9,10 +9,6 @@
  *
  */
 
-int is_palindrome(const char *input);
+int is_palindrome(char *input);
 int is_whitespace(char c);
-int is_number(char c);
-int is_lowercase(char c);
-int is_uppercase(char c);
-char convert_lower_to_uppercase(char c);
-int is_valid_char(char c);
+int is_valid_char(char *c, int idx);
