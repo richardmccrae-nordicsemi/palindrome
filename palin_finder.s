@@ -1,4 +1,5 @@
-.equ	LEDR, 0xFF200000
+.equ 	LEDR_BASE, 0xFF200000
+.equ	JTAG_UART_BASE, 0xFF201000
 
 .text
 .global _start
@@ -7,20 +8,20 @@
  * Set LEDs
  */
 leds_clear:
-	ldr r0, =LEDR
+	ldr r0, =LEDR_BASE
 	mov r1, #0
 	str r1, [r0]
 	bx lr
 
 leds_set_5_left:
-	ldr r0, =LEDR
+	ldr r0, =LEDR_BASE
 	ldr r1, =led_5_left
 	ldr r2, [r1]
 	str r2, [r0]
 	bx lr
 
 leds_set_5_right:
-	ldr r0, =LEDR
+	ldr r0, =LEDR_BASE
 	ldr r1, =led_5_right
 	ldr r2, [r1]
 	str r2, [r0]
@@ -110,6 +111,47 @@ _return_invalid:
 _end_is_valid:
 	pop {r15}					// Return back to main
 
+
+/*
+ *	Put single character to JTAG
+ */
+log_character:
+    @ Input: r1 - JTAG UART base adress
+	@ Input: r2 - character to print
+    @ Output: r1 - int (0 if no write space)
+
+	ldr r8, [r1, #4]			// read JTAG UART ctrl register
+	ldr r9, =0xffff0000
+	ands r8, r8, r9				// check if write space
+	moveq r1, #0
+	beq _end_put				// No write space, return failure
+
+	str	r2, [r1]				// send character
+
+_end_put:
+	bx lr
+
+/*
+ * Loop over string argument, putting characters to JTAG
+ */
+log_string:
+    @ Input: r0 - string to print
+
+	push {r14}
+	ldr r1, =JTAG_UART_BASE
+
+_loop_log_string:
+	ldrb r2, [r0]				// Load character from string
+	cmp r2, #0					// Check that it is not \0
+	beq _log_string_end
+
+	bl log_character
+	add r0, r0, #1				// Increment character
+	b _loop_log_string
+
+_log_string_end:
+	pop {r15}
+
 /*
  *	Start execution
  */
@@ -158,12 +200,14 @@ _loop:
 	bl is_whitespace			// test if input[fwd idx] is a whitespace
 	cmp r0, #1
 	addeq r6, r6, #1			// is whitespace, increment fwd idnx
+	beq _loop
 
 	/* check back half of input using reverse index */
 	mov r0, r7
 	bl is_whitespace			// test if input[rev idx] is a whitespace
 	cmp r0, #1
 	subeq r7, r7, #1			// is whitespace, decrement rev indx
+	beq _loop
 
 	/* Check if input[fwd indx] is invalid, correct for letter case */
 	mov r0, r6
@@ -189,18 +233,22 @@ _loop:
 	b _loop
 
 _err_invalid_char:
-	/* print 'Error: invalid character' */
+	ldr r0, =str_err_inv
+	bl log_string
 	b _exit
 _err_too_short:
-	/* print 'Error: input too short' */
+	ldr r0, =str_err_len
+	bl log_string
 	b _exit
 _is_palindrome:
-	/* print 'Palindrome detected' */
 	bl leds_set_5_right
+	ldr r0, =str_is_palin
+	bl log_string
 	b _exit
 _is_not_palindrome:
-	/* print 'Not a palindrome' */
 	bl leds_set_5_left
+	ldr r0, =str_not_palin
+	bl log_string
 	b _exit
 _exit:
 	// Branch here for exit
@@ -212,5 +260,9 @@ _exit:
 .align
 	led_5_left:		.word	0x3e0
 	led_5_right:	.word	0x1f
+	str_is_palin:	.asciz	"Palidrome detected\n"
+	str_not_palin:	.asciz	"Not a palindrome\n"
+	str_err_len:	.asciz	"Error: Input must be atleast 2 characters\n"
+	str_err_inv:	.asciz	"Error: Invalid character\n"
 	input: 			.asciz	"Gag"
 .end

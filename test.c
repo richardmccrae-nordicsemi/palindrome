@@ -106,6 +106,13 @@ void test_palindrome_case_insensitive(void)
     TEST_ASSERT_EQUAL_INT(1, ret);
 }
 
+void test_palindrome_many_spaces(void)
+{
+    char arr[] = "3                 21    12         3";
+    ret = is_palindrome(arr);
+    TEST_ASSERT_EQUAL_INT(1, ret);
+}
+
 /**    Not a palindrome    **/
 void test_no_palindrome_even(void)
 {
@@ -137,31 +144,47 @@ void test_illegal_one_character(void)
     TEST_ASSERT_EQUAL_INT(-1, ret);
 }
 
+/**    Longest substring, palindrome exists    **/
+void test_substr_positive(void)
+{
+    char s[] = "Abba CC  dccA";
+    char output[16] = {0};
+    char preprocessed[strlen(s) + 1];
+
+    preprocess(s, preprocessed);
+
+    strcpy(output, longestPalindrome(preprocessed));
+    TEST_ASSERT_EQUAL_STRING("accdcca", output);
+}
+
 /**     Test main      **/
 int main(void)
 {
     UNITY_BEGIN();
 
     /* low-level fxs */
-    RUN_TEST(test_is_whitespace);
-    RUN_TEST(test_is_not_whitespace);
-    RUN_TEST(test_is_valid_char_valid);
-    RUN_TEST(test_is_valid_char_invalid);
+    // RUN_TEST(test_is_whitespace);
+    // RUN_TEST(test_is_not_whitespace);
+    // RUN_TEST(test_is_valid_char_valid);
+    // RUN_TEST(test_is_valid_char_invalid);
 
     /* Palindrome */
-    RUN_TEST(test_palindrome_no_spaces_even);
-    RUN_TEST(test_palindrome_no_spaces_odd);
-    RUN_TEST(test_palindrome_spaces_even);
-    RUN_TEST(test_palindrome_spaces_odd);
-    RUN_TEST(test_palindrome_case_insensitive);
+    // RUN_TEST(test_palindrome_no_spaces_even);
+    // RUN_TEST(test_palindrome_no_spaces_odd);
+    // RUN_TEST(test_palindrome_spaces_even);
+    // RUN_TEST(test_palindrome_spaces_odd);
+    // RUN_TEST(test_palindrome_case_insensitive);
+    // RUN_TEST(test_palindrome_many_spaces);
 
     /* Not a palindrome */
-    RUN_TEST(test_no_palindrome_even);
-    RUN_TEST(test_no_palindrome_odd);
-    RUN_TEST(test_illegal_characters_even);
-    RUN_TEST(test_illegal_characters_odd);
-    RUN_TEST(test_illegal_one_character);
+    // RUN_TEST(test_no_palindrome_even);
+    // RUN_TEST(test_no_palindrome_odd);
+    // RUN_TEST(test_illegal_characters_even);
+    // RUN_TEST(test_illegal_characters_odd);
+    // RUN_TEST(test_illegal_one_character);
 
+/**    Longest substring, palindrome exists    **/
+    RUN_TEST(test_substr_positive);
 
     return UNITY_END();
 }

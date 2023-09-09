@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #define ASCII_WHITESPACE      32
 #define ASCII_NUMBER_LOW      48
@@ -109,12 +110,13 @@ loop:
     /* Ignore whitespaces */
     if (is_whitespace(input[i])) {
         i = i + 1;
+        goto loop;
     }
     if (is_whitespace(input[j])) {
         j = j -1;
+        goto loop;
     }
 
-    // printf("input[%d]: %c, input[%d]: %c\n", i, input[i], j, input[j]);
     if (!is_valid_char(input, i)) {
         goto error_invalid_character;
     }
@@ -146,4 +148,65 @@ end_not_palindrome:
     return 0;
 end_error:
     return -1;
+}
+
+int preprocess(char* s, char* preprocessed) {
+    int index = 0;
+    for (int i = 0; i < strlen(s); ++i) {
+        if (s[i] >= '0' && s[i] <= '9') {
+            preprocessed[index++] = s[i];
+        } else if (s[i] >= 'A' && s[i] <= 'Z') {
+            preprocessed[index++] = tolower(s[i]);
+        } else if (s[i] >= 'a' && s[i] <= 'z') {
+            preprocessed[index++] = s[i];
+        } else if (s[i] != ' ') {
+            return -1;
+        }
+    }
+    preprocessed[index] = '\0';
+    return 0;
+}
+
+int expandAroundCenter(char* s, int len, int left, int right) {
+    while (left >= 0 && right < len && s[left] == s[right]) {
+        left--;
+        right++;
+    }
+    return right - left - 1;
+}
+
+char* longestPalindrome(char* s) {
+    int len = strlen(s);
+    if (len < 2) {
+        return s;
+    }
+
+    int start = 0, end = 0;
+    for (int i = 0; i < len; i++) {
+        int len1 = expandAroundCenter(s, len, i, i);
+        int len2 = expandAroundCenter(s, len, i, i + 1);
+        int lenMax = len1 > len2 ? len1 : len2;
+
+        if (lenMax > end - start) {
+            start = i - (lenMax - 1) / 2;
+            end = i + lenMax / 2;
+        }
+    }
+
+    s[end + 1] = '\0';
+    return s + start;
+}
+
+int substr_example(void) {
+    char s[] = "Abba CC dccA";
+    char preprocessed[strlen(s) + 1];
+
+    if (preprocess(s, preprocessed) == -1) {
+        printf("Error: Invalid characters in input.\n");
+        return -1;
+    }
+
+    printf("%s\n", longestPalindrome(preprocessed));
+
+    return 0;
 }
