@@ -157,6 +157,18 @@ void test_substr_positive(void)
     TEST_ASSERT_EQUAL_STRING("accdcca", output);
 }
 
+void test_substr_negative(void)
+{
+    char s[] = "abcdefghij";
+    char output[16] = {0};
+    char preprocessed[strlen(s) + 1];
+
+    preprocess(s, preprocessed);
+
+    strcpy(output, longestPalindrome(preprocessed));
+    TEST_ASSERT_EQUAL_STRING("", output);
+}
+
 /**     Test main      **/
 int main(void)
 {
@@ -185,6 +197,7 @@ int main(void)
 
 /**    Longest substring, palindrome exists    **/
     RUN_TEST(test_substr_positive);
+    RUN_TEST(test_substr_negative);
 
     return UNITY_END();
 }

@@ -176,21 +176,30 @@ int expandAroundCenter(char* s, int len, int left, int right) {
 }
 
 char* longestPalindrome(char* s) {
-    int len = strlen(s);
+    int i;
+    int len, len1, len2;
+    int start = 0, end = 0;
+    int lenMax = 0;
+
+    len = strlen(s);
     if (len < 2) {
         return s;
     }
 
-    int start = 0, end = 0;
-    for (int i = 0; i < len; i++) {
-        int len1 = expandAroundCenter(s, len, i, i);
-        int len2 = expandAroundCenter(s, len, i, i + 1);
-        int lenMax = len1 > len2 ? len1 : len2;
+    for (i = 0; i < len; i++) {
+        len1 = expandAroundCenter(s, len, i, i);
+        len2 = expandAroundCenter(s, len, i, i + 1);
+        lenMax = len1 > len2 ? len1 : len2;
 
         if (lenMax > end - start) {
             start = i - (lenMax - 1) / 2;
             end = i + lenMax / 2;
         }
+    }
+
+    if (end - start < 1) { // Check if the longest palindrome found has less than 2 characters
+        s[0] = '\0';  // Return an empty string if no valid palindrome found
+        return s;
     }
 
     s[end + 1] = '\0';
