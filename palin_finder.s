@@ -1,4 +1,30 @@
+.equ	LEDR, 0xFF200000
+
+.text
 .global _start
+
+/*
+ * Set LEDs
+ */
+leds_clear:
+	ldr r0, =LEDR
+	mov r1, #0
+	str r1, [r0]
+	bx lr
+
+leds_set_5_left:
+	ldr r0, =LEDR
+	ldr r1, =led_5_left
+	ldr r2, [r1]
+	str r2, [r0]
+	bx lr
+
+leds_set_5_right:
+	ldr r0, =LEDR
+	ldr r1, =led_5_right
+	ldr r2, [r1]
+	str r2, [r0]
+	bx lr
 
 /*
  *	Test if character is a whitespace, if so, adjust index location
@@ -99,6 +125,7 @@ _start:
 	@ Reverse Index: r7
 	@ Variables local to function: r8, r9
 
+	bl leds_clear				// Clear LEDs to start
 	ldr r3, =input				// Initialize input variable
 	mov r4, #0					// Initialize length variable
 
@@ -169,11 +196,11 @@ _err_too_short:
 	b _exit
 _is_palindrome:
 	/* print 'Palindrome detected' */
-	/* light 5 RIGHT most LEDs */
+	bl leds_set_5_right
 	b _exit
 _is_not_palindrome:
 	/* print 'Not a palindrome' */
-	/* light 5 LEFT most LEDs */
+	bl leds_set_5_left
 	b _exit
 _exit:
 	// Branch here for exit
@@ -183,8 +210,7 @@ _exit:
 
 .data
 .align
-	// This is the input you are supposed to check for a palindrom
-	// You can modify the string during development, however you
-	// are not allowed to change the name 'input'!
-	input: .asciz "Gag"
+	led_5_left:		.word	0x3e0
+	led_5_right:	.word	0x1f
+	input: 			.asciz	"Gag"
 .end
