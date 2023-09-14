@@ -145,7 +145,7 @@ void test_illegal_one_character(void)
 }
 
 /**    Longest substring, palindrome exists    **/
-void test_substr_positive(void)
+void test_substr_positive_0(void)
 {
     char s[] = "Abba CC  dccA";
     char output[16] = {0};
@@ -155,6 +155,18 @@ void test_substr_positive(void)
 
     strcpy(output, longestPalindrome(preprocessed));
     TEST_ASSERT_EQUAL_STRING("accdcca", output);
+}
+
+void test_substr_positive_1(void)
+{
+    char s[] = "A completely random sentences 998878899 Abba CC  dccA  idk, maybe this will work";
+    char output[16] = {0};
+    char preprocessed[strlen(s) + 1];
+
+    preprocess(s, preprocessed);
+
+    strcpy(output, longestPalindrome(preprocessed));
+    TEST_ASSERT_EQUAL_STRING("998878899", output);
 }
 
 void test_substr_negative(void)
@@ -196,7 +208,8 @@ int main(void)
     // RUN_TEST(test_illegal_one_character);
 
 /**    Longest substring, palindrome exists    **/
-    RUN_TEST(test_substr_positive);
+    RUN_TEST(test_substr_positive_0);
+    RUN_TEST(test_substr_positive_1);
     RUN_TEST(test_substr_negative);
 
     return UNITY_END();

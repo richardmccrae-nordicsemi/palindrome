@@ -1,3 +1,26 @@
+/**
+ * @file palidrome.c
+
+ * @author Richard McCrae (https://github.com/richard-jh-mccrae)
+ * @brief
+ *
+ * Determine if a user input is a palindrome or not.
+ *
+ *  Constraints:
+ *  	Input must be atleast two characters long.
+ *		Only valid characters are [0-9A-Za-z] and white space
+ *		Whitespaces are to be ignored
+ *
+ *		A palindrome is to deisply on JTAG UART, "Palindrome detected"
+ *			whlie lighting the five right most red LEDs
+ *		Not a palindrome is to display just that, whlie lighting the
+ *			five left most red LEDs
+ *		Invalid user entry shall provide an error message
+ *
+ * @date 2023-09-03
+ *
+ */
+
 .equ 	LEDR_BASE, 0xFF200000
 .equ	JTAG_UART_BASE, 0xFF201000
 
@@ -103,6 +126,7 @@ _convert_case:
 	ldrb r8, [r3, r0]			// input[idx]
 	add r8, r8, #32				// Convert upper to lower (+32)
 	strb r8, [r3, r0]
+
 _return_valid:
 	mov r0, #1
 	b _end_is_valid

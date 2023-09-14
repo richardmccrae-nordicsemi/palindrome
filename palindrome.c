@@ -1,25 +1,23 @@
 /**
  * @file palidrome.c
 
- * @author Richard McCrae (https://github.com/richardmccrae-nordicsemi)
+ * @author Richard McCrae (https://github.com/richard-jh-mccrae)
  * @brief
- * @version 0.1
+ *
+ * Determine if a user input is a palindrome or not.
+ *
+ *  Constraints:
+ *  	Input must be atleast two characters long.
+ *		Only valid characters are [0-9A-Za-z] and white space
+ *		Whitespaces are to be ignored
+ *
+ *		A palindrome is to deisply on JTAG UART, "Palindrome detected"
+ *			whlie lighting the five right most red LEDs
+ *		Not a palindrome is to display just that, whlie lighting the
+ *			five left most red LEDs
+ *		Invalid user entry shall provide an error message
+ *
  * @date 2023-09-03
- *
- * @copyright Copyright (c) 2023
- *
- */
-
-/**
- * @brief Determine if a user input is a palindrome or not.
- *
- * A palindrome reads the same backwards as forwards.
- *
- * Constraints
- *  Case insensitive
- *  alphanumeric and spaces are accepted, but spaces are ignored
- *  no punctuation or special characters
- *  Input must be atleast two characters
  *
  */
 
